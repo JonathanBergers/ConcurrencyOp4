@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/akka-tutorial-first-java.iml" filepath="$PROJECT_DIR$/akka-tutorial-first-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ConcAkka.iml" filepath="$PROJECT_DIR$/ConcAkka.iml" />
     </modules>
   </component>
 </project>
