@@ -30,4 +30,8 @@ public class Wing {
     }
 
 
+    public boolean hasLabel(final String label){
+        return this.label.equals(label);
+    }
+
 }

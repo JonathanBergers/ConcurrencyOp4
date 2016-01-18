@@ -1,11 +1,10 @@
 package actors;
 
-import akka.actor.Actor;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import akka.actor.UntypedActorFactory;
 import model.Chair;
 import model.Section;
+import model.Wing;
 import model.messages.CustomerDecision;
 import model.messages.Reservation;
 
@@ -23,8 +22,13 @@ import java.util.List;
  *
  *
  */
-public class SectionAdmin extends UntypedActor{
+public class SectionAdmin extends UntypedActor implements ActorCreator<Wing, Integer> {
 
+
+    @Override
+    public Props getProps(Wing data, Integer parameter) {
+        return null;
+    }
 
     public SectionAdmin(Section section) {
         this.section = section;
@@ -114,6 +118,7 @@ public class SectionAdmin extends UntypedActor{
 
 
         }
+
 
 
 }
