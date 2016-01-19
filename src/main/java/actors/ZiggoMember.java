@@ -18,12 +18,6 @@ public abstract class ZiggoMember extends UntypedActor {
     }
 
 
-    @Override
-    public void preStart() throws Exception {
-
-        log().info(getClass().getCanonicalName() + " " + toString() + " PRE START");
-        super.preStart();
-    }
 
     final int id;
     static int idCounter = 0;

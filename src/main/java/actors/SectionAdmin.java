@@ -22,7 +22,7 @@ import java.util.List;
  *
  *
  */
-public class SectionAdmin extends UntypedActor{
+public class SectionAdmin extends ZiggoMember{
 
 
 
@@ -40,7 +40,10 @@ public class SectionAdmin extends UntypedActor{
     public void onReceive(Object message) throws Exception {
 
 
+
             if (message instanceof Reservation){
+
+                log().info(toString() + " Got a reservation");
                 Reservation reservation = (Reservation) message;
                 List<Chair> chairs = new ArrayList<>();
 
@@ -55,6 +58,7 @@ public class SectionAdmin extends UntypedActor{
                     }
                     if(!section.hasChair(i)){
                         reservationPossible = false;
+                        break;
                     }
 
                     Chair chair = section.getChair(i);
@@ -66,6 +70,8 @@ public class SectionAdmin extends UntypedActor{
                         reservationPossible = false;
                     }
                 }
+
+                log().info(toString() + " reservation possible ? : " + reservationPossible);
 
                 // return decision
                 if(reservationPossible){

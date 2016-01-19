@@ -17,8 +17,14 @@ import java.util.List;
  *
  *
  */
-@Builder
 public class Reservation {
+
+
+    public Reservation(final String wing, final int sectionNumber, int... chairNumbers) {
+        this.wing = wing;
+        this.sectionNumber = sectionNumber;
+        this.chairNumbers = chairNumbers;
+    }
 
     @Getter
     private final String wing;
@@ -26,9 +32,9 @@ public class Reservation {
     @Getter
     private final int sectionNumber;
 
+
     @Getter
-    @Singular
-    private final List<Integer> chairNumbers;
+    private final int[] chairNumbers;
 
 
     @Override

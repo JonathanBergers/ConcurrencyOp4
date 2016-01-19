@@ -59,12 +59,13 @@ public class ZiggoDome extends ZiggoMember{
         for(String s: wingLabels){
 
             List<Section> sections = new ArrayList<>();
-            // create 10 sections
-            for (int i = 0; i < 10; i++) {
-                sections.add(new Section(i));
-            }
-            // add 10 chairs to the sections
-            for (int i = 0; i < 10; i++) {
+            // create 2 sections
+
+            sections.add(new Section(1));
+            sections.add(new Section(2));
+
+            // add 5 chairs to the sections
+            for (int i = 0; i < 5; i++) {
                 final int finalI = i;
                 sections.forEach(section -> section.addChair(new Chair(finalI)));
             }

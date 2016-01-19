@@ -37,21 +37,23 @@ public class WingAgent extends ZiggoMember{
     @Override
     public void onReceive(Object message) throws Exception {
 
+        Reservation r = null;
         if(message instanceof Reservation){
-            Reservation r = (Reservation) message;
-            assert wingAgents.containsKey(r.get());
-            // send to the right wing
-            wingAgents.get(r.getWing()).tell(message, getSender());
+            r = (Reservation) message;
         }
         if(message instanceof CustomerDecision){
-            CustomerDecision r = (CustomerDecision) message;
-            assert wingAgents.containsKey(r.getReservation().getWing());
-            // send to the right wing
-            wingAgents.get(r.getReservation().getWing()).tell(message, getSender());
+            r = ((CustomerDecision) message).getReservation();
         }
 
+        if(r == null){
+            unhandled(message);
+            return;
+        }
 
-        log().info( toString() + "RECIEVED: " + message.toString());
+        int sectionNr = r.getSectionNumber();
+        assert sectionAdmins.containsKey(sectionNr);
+        sectionAdmins.get(sectionNr).tell(message, getSender());
+
 
     }
 

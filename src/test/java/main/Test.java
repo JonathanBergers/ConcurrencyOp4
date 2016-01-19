@@ -40,7 +40,7 @@ public class Test {
 
         for(String s: wingLabels){
             List<ActorRef> customersSegment = new ArrayList<>();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 2; i++) {
                 customersSegment.add(actorSystem.actorOf(Customer.create(ziggoDome)));
             }
             customers.add(customersSegment);
@@ -62,8 +62,12 @@ public class Test {
 
 
                     // send reservation for 1 chair in a sectionNumber
-                    IntSupplier randomNumber = () -> (int)(Math.random() * 10);
-                    Reservation r = Reservation.builder().chairNumber(randomNumber.getAsInt()).sectionNumber(randomNumber.getAsInt()).wing(wingLabel).build();
+                    IntSupplier randomNumber = () -> (int)(Math.random() * 5);
+
+                    int chairNumber = randomNumber.getAsInt();
+                    int sectionNumber = randomNumber.getAsInt() > 2 ? 1: 2;
+
+                    Reservation r = new Reservation(wingLabel, sectionNumber, chairNumber);
 
 
 
