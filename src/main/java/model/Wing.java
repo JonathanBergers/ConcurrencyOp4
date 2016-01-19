@@ -1,5 +1,7 @@
 package model;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +10,9 @@ import java.util.Optional;
  * Created by jonathan on 16-1-16.
  */
 public class Wing {
+    @Getter
     private final String label;
+    @Getter
     private List<Section> sections = new ArrayList<>();
 
 

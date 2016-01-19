@@ -22,32 +22,17 @@ import java.util.List;
  *
  *
  */
-public class SectionAdmin extends UntypedActor implements ActorCreator<Wing, Integer> {
+public class SectionAdmin extends UntypedActor{
 
 
-    @Override
-    public Props getProps(Wing data, Integer parameter) {
-        return null;
+
+    static Props create(Section section){
+        return Props.create(SectionAdmin.class, () -> new SectionAdmin(section));
     }
 
     public SectionAdmin(Section section) {
         this.section = section;
     }
-
-    public static Props props(final Section section){
-        return new Props(() -> {
-            return new SectionAdmin(section);
-        });
-    }
-
-    /**
-     * Build section
-     */
-    @Override
-    public void preStart() {
-        super.preStart();
-    }
-
     private final Section section;
 
 

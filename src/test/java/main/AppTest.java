@@ -1,5 +1,8 @@
 package main;
 
+import actors.ZiggoDome;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +36,18 @@ public class AppTest
      */
     public void testApp()
     {
+
+        ActorSystem actorSystem = ActorSystem.create("Amsterdam");
+
+        ActorRef actorRef = actorSystem.actorOf(ZiggoDome.create(10));
+
+
+        for (int i = 0; i < 10; i++) {
+
+
+        }
+
+
         assertTrue( true );
     }
 }

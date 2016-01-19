@@ -10,17 +10,34 @@ import akka.event.LoggingAdapter;
  */
 public abstract class ZiggoMember extends UntypedActor {
 
-//
-//    public<D, P> Props create(D data, P parameter){
-//
-//
-//    };
-//    protected final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-//
-//    public ZiggoMember(final ActorCreator a) {
-//        creator = a;
-//    }
-//
 
 
+
+    protected LoggingAdapter log(){
+        return Logging.getLogger(getContext().system(), this);
+    }
+
+
+    @Override
+    public void preStart() throws Exception {
+
+        log().info(getClass().getCanonicalName() + " " + toString() + " PRE START");
+        super.preStart();
+    }
+
+    final int id;
+    static int idCounter = 0;
+
+    public ZiggoMember() {
+        this.id = idCounter;
+        idCounter ++;
+
+    }
+
+
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()  +  " ID: " + id + " ";
+    }
 }

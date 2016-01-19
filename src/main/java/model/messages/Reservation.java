@@ -21,11 +21,22 @@ import java.util.List;
 public class Reservation {
 
     @Getter
+    private final String wing;
+
+    @Getter
     private final int sectionNumber;
+
     @Getter
     @Singular
     private final List<Integer> chairNumbers;
 
 
-
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "wing='" + wing + '\'' +
+                ", sectionNumber=" + sectionNumber +
+                ", chairNumbers=" + chairNumbers +
+                '}';
+    }
 }

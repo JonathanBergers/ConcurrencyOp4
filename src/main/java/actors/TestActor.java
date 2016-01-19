@@ -1,27 +1,22 @@
 package actors;
 
-import akka.actor.UntypedActor;
+import akka.actor.ActorRef;
 
 /**
- * Created by jonathan on 15-1-16.
- *
- *
- *
+ * Created by jonathan on 19-1-16.
  */
-public class TestActor extends UntypedActor {
+public class TestActor extends ZiggoMember {
 
 
-    public TestActor() {
+    private final ActorRef ziggoDome;
 
-
-
+    public TestActor(ActorRef ziggoDome) {
+        this.ziggoDome = ziggoDome;
     }
+
 
     @Override
     public void onReceive(Object message) throws Exception {
 
-
     }
-
-
 }

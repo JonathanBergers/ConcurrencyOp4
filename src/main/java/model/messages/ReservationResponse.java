@@ -1,6 +1,7 @@
 package model.messages;
 
 import lombok.Builder;
+import lombok.Getter;
 
 /**
  * Created by jonathan on 16-1-16.
@@ -11,5 +12,6 @@ import lombok.Builder;
 @Builder
 public class ReservationResponse {
 
+    @Getter
     private final boolean reservationPossible;
 }

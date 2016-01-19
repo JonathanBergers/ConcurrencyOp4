@@ -6,30 +6,23 @@ import model.Wing;
 import model.messages.CustomerDecision;
 import model.messages.Reservation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by jonathan on 15-1-16.
- *
- * Wing
+ * Created by jonathan on 19-1-16.
  */
-public class WingAgent extends ZiggoMember{
+public class WingManager extends ZiggoMember {
 
-    private final Wing wing;
-    private final HashMap<Integer, ActorRef> sectionAdmins = new HashMap<>();
+    public static Props create(List<Wing> wings){
+        return Props.create(WingManager.class ,() -> new WingManager(wings));
 
-
-    public static Props create(Wing wing){
-        return Props.create(WingAgent.class, () -> new WingAgent(wing));
     }
 
-    public WingAgent(Wing wing) {
-        this.wing = wing;
-        wing.getSections().forEach(section -> sectionAdmins.put(section.getNumber(), getContext().actorOf(SectionAdmin.create(section))));
+    private final HashMap<String, ActorRef> wingAgents = new HashMap<>();
 
-
+    public WingManager(List<Wing> wings) {
+        wings.forEach(wing -> wingAgents.put(wing.getLabel(), getContext().actorOf(WingAgent.create(wing))));
     }
 
 
@@ -39,7 +32,7 @@ public class WingAgent extends ZiggoMember{
 
         if(message instanceof Reservation){
             Reservation r = (Reservation) message;
-            assert wingAgents.containsKey(r.get());
+            assert wingAgents.containsKey(r.getWing());
             // send to the right wing
             wingAgents.get(r.getWing()).tell(message, getSender());
         }
@@ -50,10 +43,5 @@ public class WingAgent extends ZiggoMember{
             wingAgents.get(r.getReservation().getWing()).tell(message, getSender());
         }
 
-
-        log().info( toString() + "RECIEVED: " + message.toString());
-
     }
-
-
 }
