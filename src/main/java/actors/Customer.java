@@ -49,7 +49,6 @@ public class Customer extends ZiggoMember {
         if(message instanceof ReservationInfo){
             ReservationInfo r = (ReservationInfo) message;
 
-
             log().info(toString() + " GOT INFO " + message.toString());
             //check path
             LinkedList<Class> path = r.getRequest().getMarks();

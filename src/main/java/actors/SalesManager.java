@@ -21,12 +21,9 @@ public class SalesManager extends ZiggoMember {
     }
 
 
-
     private final Router salesMen;
 
     public SalesManager(int amountOfSalesman, ActorRef wingManager) {
-
-
 
         // create the children
         List<ActorRef> salesMenRefs = new ArrayList<>();
@@ -40,8 +37,6 @@ public class SalesManager extends ZiggoMember {
 
         // create the router
         salesMen = new Router(new SmallestMailboxRoutingLogic(), salesMenRoutees);
-
-
     }
 
 

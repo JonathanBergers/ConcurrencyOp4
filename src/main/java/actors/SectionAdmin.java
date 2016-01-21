@@ -13,10 +13,7 @@ import java.util.List;
  * Created by jonathan on 15-1-16.
  *
  * Beheerder van vakken
- * Krijgt:
- *
- * Reservation
- * ReservationConfirmation
+
  *
  *
  */

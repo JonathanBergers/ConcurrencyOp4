@@ -51,14 +51,12 @@ public class Test {
 
         while(true){
 
-
             for (int i = 0; i < wingLabels.size(); i++) {
 
                 List<ActorRef> customersForWing = customers.get(i);
                 String wingLabel = wingLabels.get(i);
 
                 for(ActorRef cust : customersForWing){
-
 
                     // send reservation for 1 chair in a sectionNumber
                     IntSupplier randomNumber = () -> (int)(Math.random() * 5);

@@ -41,15 +41,16 @@ public class WingAgent extends ZiggoMember{
             ((ReservationMessage) message).mark(this);
             Reservation r = ((ReservationMessage)message).getReservation();
 
+            // forward message to right section admin
             int sectionNr = r.getSectionNumber();
             assert sectionAdmins.containsKey(sectionNr);
             sectionAdmins.get(sectionNr).tell(message, getSender());
 
         }else{
-
+            unhandled(message);
         }
 
-        unhandled(message);
+
 
 
 

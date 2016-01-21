@@ -9,12 +9,6 @@ import model.messages.ReservationRequest;
 
 /**
  * Created by jonathan on 15-1-16.
- * Krijgt:
- *
- * Reservation:
- * Customer decision
- *
- * Wanneer klant kaartje wil kopen dan zegt ie dit tegen wing agent
  *
  */
 public class SalesMan extends ZiggoMember{
@@ -35,7 +29,6 @@ public class SalesMan extends ZiggoMember{
     @Override
     public void onReceive(Object message) throws Exception {
         if(message instanceof ReservationMessage){
-
             ((ReservationMessage) message).mark(this);
             wingManager.tell(message, getSender());
         }else{
@@ -44,14 +37,4 @@ public class SalesMan extends ZiggoMember{
 
     }
 
-
-
-
-    /*
-
-    get try buy
-    ask wingagent, are seats available, (try reservate
-
-
-     */
 }
