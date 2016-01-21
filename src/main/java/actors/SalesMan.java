@@ -2,16 +2,10 @@ package actors;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.actor.UntypedActor;
-import akka.routing.ActorRefRoutee;
-import akka.routing.Routee;
-import akka.routing.Router;
-import akka.routing.SmallestMailboxRoutingLogic;
-import model.messages.CustomerDecision;
-import model.messages.Reservation;
-
-import java.util.ArrayList;
-import java.util.List;
+import model.messages.ReservationConfirmation;
+import model.Reservation;
+import model.messages.ReservationMessage;
+import model.messages.ReservationRequest;
 
 /**
  * Created by jonathan on 15-1-16.
@@ -40,22 +34,13 @@ public class SalesMan extends ZiggoMember{
 
     @Override
     public void onReceive(Object message) throws Exception {
+        if(message instanceof ReservationMessage){
 
-        log().info( toString() + "RECIEVED: " + message.toString());
-
-        // send to wing manager
-        if (message instanceof Reservation){
+            ((ReservationMessage) message).mark(this);
             wingManager.tell(message, getSender());
-            // stuur door naar wing agent
+        }else{
+            unhandled(message);
         }
-
-        if(message instanceof CustomerDecision){
-            wingManager.tell(message, getSender());
-            // stuur door naar wing agennt..
-        }
-        unhandled(message);
-
-        // dump message
 
     }
 

@@ -1,12 +1,10 @@
 package actors;
 
 import akka.actor.Props;
-import akka.actor.UntypedActor;
 import model.Chair;
 import model.Section;
-import model.Wing;
-import model.messages.CustomerDecision;
-import model.messages.Reservation;
+import model.messages.*;
+import model.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ import java.util.List;
  * Krijgt:
  *
  * Reservation
- * CustomerDecision
+ * ReservationConfirmation
  *
  *
  */
@@ -39,14 +37,15 @@ public class SectionAdmin extends ZiggoMember{
     @Override
     public void onReceive(Object message) throws Exception {
 
+        if(message instanceof ReservationMessage){
+            ((ReservationMessage) message).mark(this);
 
 
-            if (message instanceof Reservation){
 
-                log().info(toString() + " Got a reservation");
-                Reservation reservation = (Reservation) message;
+            Reservation reservation = ((ReservationMessage) message).getReservation();
+
+            if (message instanceof ReservationRequest){
                 List<Chair> chairs = new ArrayList<>();
-
 
                 // check if all chairs are available for reservation
                 boolean reservationPossible = true;
@@ -72,40 +71,73 @@ public class SectionAdmin extends ZiggoMember{
                 }
 
                 log().info(toString() + " reservation possible ? : " + reservationPossible);
-
+                ReservationInfo response = null;
                 // return decision
                 if(reservationPossible){
                     chairs.forEach(chair -> chair.setState(Chair.ChairState.RESERVED));
+
+                    response = new ReservationInfo(reservation, true, (ReservationMessage) message);
                     // send okay message
                 }else{
+                    response = new ReservationInfo(reservation, false, (ReservationMessage) message);
                     // send not okay message
                 }
+
+                getSender().tell(response, getSelf());
+
                 return;
 
             }
 
-        if(message instanceof CustomerDecision){
-            CustomerDecision decision = (CustomerDecision) message;
-            Reservation reservation = decision.getReservation();
+            if(message instanceof ReservationConfirmation){
 
-            for (Integer i: reservation.getChairNumbers()){
+                ReservationConfirmation decision = (ReservationConfirmation) message;
+                List<Chair> boughtChairs = new ArrayList<>();
+                for (Integer i: reservation.getChairNumbers()){
 
-                Chair chair = section.getChair(i);
-                assert chair != null;
-                assert chair.hasState(Chair.ChairState.RESERVED): "chair isnt reserved.." + chair;
+                    Chair chair = section.getChair(i);
+                    assert chair != null;
+                    assert chair.hasState(Chair.ChairState.RESERVED): "chair isnt reserved.." + chair;
+
+                    switch (decision.getType()){
+                        case BUY:
+                            chair.setState(Chair.ChairState.TAKEN);
+                            boughtChairs.add(chair);
+                            break;
+                        case CANCEL:
+                            chair.setState(Chair.ChairState.FREE);
+                            break;
+                    }
+                }
+
+                ReservationResult reservationResult = null;
 
                 switch (decision.getType()){
                     case BUY:
-                        chair.setState(Chair.ChairState.TAKEN);
+                        assert boughtChairs.size() == reservation.getChairNumbers().length;
+                        reservationResult = new ReservationResult(reservation, boughtChairs, (ReservationMessage) message, true);
                         break;
                     case CANCEL:
-                        chair.setState(Chair.ChairState.FREE);
+                        assert boughtChairs.size() == 0;
+                        reservationResult = new ReservationResult(reservation, boughtChairs, (ReservationMessage) message, false);
                         break;
                 }
+
+                getSender().tell(reservationResult, getSelf());
+
+
+
             }
 
 
+
+
+
+        }else{
+            unhandled(message);
         }
+
+
 
 
         }

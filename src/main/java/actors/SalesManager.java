@@ -6,8 +6,7 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.Routee;
 import akka.routing.Router;
 import akka.routing.SmallestMailboxRoutingLogic;
-import model.messages.Reservation;
-import org.apache.camel.Route;
+import model.messages.ReservationMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,14 @@ public class SalesManager extends ZiggoMember {
     @Override
     public void onReceive(Object message) throws Exception {
 
-        salesMen.route(message, getSender());
+        if(message instanceof ReservationMessage){
+            ((ReservationMessage) message).mark(this);
+            salesMen.route(message, getSender());
+        }else{
+            unhandled(message);
+        }
+
+
 
         // if message from customer
         //redirect to children, salesman

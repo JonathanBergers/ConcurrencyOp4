@@ -3,12 +3,12 @@ package actors;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import model.Wing;
-import model.messages.CustomerDecision;
-import model.messages.Reservation;
+import model.messages.ReservationConfirmation;
+import model.Reservation;
+import model.messages.ReservationMessage;
+import model.messages.ReservationRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by jonathan on 15-1-16.
@@ -37,22 +37,21 @@ public class WingAgent extends ZiggoMember{
     @Override
     public void onReceive(Object message) throws Exception {
 
-        Reservation r = null;
-        if(message instanceof Reservation){
-            r = (Reservation) message;
-        }
-        if(message instanceof CustomerDecision){
-            r = ((CustomerDecision) message).getReservation();
+        if(message instanceof ReservationMessage){
+            ((ReservationMessage) message).mark(this);
+            Reservation r = ((ReservationMessage)message).getReservation();
+
+            int sectionNr = r.getSectionNumber();
+            assert sectionAdmins.containsKey(sectionNr);
+            sectionAdmins.get(sectionNr).tell(message, getSender());
+
+        }else{
+
         }
 
-        if(r == null){
-            unhandled(message);
-            return;
-        }
+        unhandled(message);
 
-        int sectionNr = r.getSectionNumber();
-        assert sectionAdmins.containsKey(sectionNr);
-        sectionAdmins.get(sectionNr).tell(message, getSender());
+
 
 
     }

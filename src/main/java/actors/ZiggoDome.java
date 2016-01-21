@@ -1,18 +1,16 @@
 package actors;
 
 import akka.actor.*;
-import akka.routing.Router;
-import akka.routing.SmallestMailboxRoutingLogic;
 import model.Chair;
 import model.Section;
 import model.Wing;
-import model.messages.CustomerDecision;
-import model.messages.Reservation;
+import model.messages.ReservationConfirmation;
+import model.Reservation;
+import model.messages.ReservationMessage;
+import model.messages.ReservationRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.function.IntSupplier;
 
 /**
  * Created by jonathan on 16-1-16.
@@ -47,6 +45,9 @@ public class ZiggoDome extends ZiggoMember{
     }
 
     private void initData(){
+
+
+
         wingLabels.add("vloer");
         wingLabels.add("eerste ring noord");
         wingLabels.add("eerste ring west");
@@ -78,13 +79,14 @@ public class ZiggoDome extends ZiggoMember{
     @Override
     public void onReceive(Object message) throws Exception {
 
-        log().debug(toString() + "Got message" + message.toString());
-
-        if((message instanceof Reservation) || (message instanceof CustomerDecision)){
+        if(message instanceof ReservationMessage){
+            ((ReservationMessage) message).mark(this);
             salesManager.tell(message, getSender());
+        }else{
+            unhandled(message);
         }
 
-        unhandled(message);
+
 
     }
 

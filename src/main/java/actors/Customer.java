@@ -2,10 +2,15 @@ package actors;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.event.Logging;
-import model.messages.CustomerDecision;
-import model.messages.Reservation;
-import model.messages.ReservationResponse;
+import model.Chair;
+import model.messages.ReservationConfirmation;
+import model.Reservation;
+import model.messages.ReservationInfo;
+import model.messages.ReservationRequest;
+import model.messages.ReservationResult;
+
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 /**
  * Created by jonathan on 16-1-16.
@@ -26,45 +31,76 @@ public class Customer extends ZiggoMember {
 
 
 
-
-
     @Override
     public void onReceive(Object message) throws Exception {
 
-        log().info(toString() + "RECIEVED : " + message.toString());
 
         if(message instanceof Reservation){
-
-            log().info(toString() + " Got command for reservation : " + message.toString());
             // redirect to ziggodome and make sender itself
             // for testng
-            ziggoDome.tell(message, getSelf());
+            ReservationRequest r = new ReservationRequest((Reservation) message);
+
+            log().info(toString() + " Requesting reservation " + r.getReservation());
+            ziggoDome.tell(r, getSelf());
             return;
 
         }
 
-        if(message instanceof ReservationResponse){
-            ReservationResponse r = (ReservationResponse) message;
+        if(message instanceof ReservationInfo){
+            ReservationInfo r = (ReservationInfo) message;
+
+
+            log().info(toString() + " GOT INFO " + message.toString());
+            //check path
+            LinkedList<Class> path = r.getRequest().getMarks();
+
+            assert path.pop().equals(ZiggoDome.class);
+            assert path.pop().equals(SalesManager.class);
+            assert path.pop().equals(SalesMan.class);
+            assert path.pop().equals(WingManager.class);
+            assert path.pop().equals(WingAgent.class);
+            assert path.pop().equals(SectionAdmin.class);
+
+
 
             if(r.isReservationPossible()){
 
+                ReservationConfirmation d = null;
                 // buy
                 if(Math.random()> 0.5){
-                    CustomerDecision d = CustomerDecision.builder().type(CustomerDecision.DecisionType.BUY).build();
-                    getSender().tell(d, self());
+                    d = new ReservationConfirmation(ReservationConfirmation.DecisionType.BUY, r.getReservation());
                 }else {
-                    // cancle
-                    CustomerDecision d = CustomerDecision.builder().type(CustomerDecision.DecisionType.CANCEL).build();
-                    getSender().tell(d, self());
+                    d = new ReservationConfirmation(ReservationConfirmation.DecisionType.CANCEL, r.getReservation());
                 }
-
+                getSender().tell(d, self());
             }
             return;
         }
 
+        if(message instanceof ReservationResult){
+
+            log().info(toString() + " GOT RESULT " + message.toString());
+            ReservationResult r = (ReservationResult) message;
+
+            if(r.isSuccess()){
+                // extra checks
+                //assert all seats are returned in ticket
+                assert r.getChairs().size() == r.getRequest().getReservation().getChairNumbers().length;
+                //assert all seats are taken
+                assert r.getChairs().stream().filter(chair -> chair.hasState(Chair.ChairState.TAKEN)).collect(Collectors.toList()).size() == r.getRequest().getReservation().getChairNumbers().length;
+            }else{
+                assert r.getChairs().size() == 0;
+            }
 
 
-        log().warning("Message not handled");
+            LinkedList<Class> path = r.getRequest().getMarks();
+            assert path.size() == 1;
+            assert path.pop().equals(SectionAdmin.class);
+
+
+            return;
+        }
+
         unhandled(message);
     }
 

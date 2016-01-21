@@ -4,6 +4,8 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import model.Reservation;
+import model.messages.ReservationMessage;
 
 /**
  * Created by jonathan on 18-1-16.
@@ -34,4 +36,7 @@ public abstract class ZiggoMember extends UntypedActor {
     public String toString() {
         return getClass().getSimpleName()  +  " ID: " + id + " ";
     }
+
+
+
 }

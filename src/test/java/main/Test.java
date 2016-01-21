@@ -4,18 +4,17 @@ import actors.Customer;
 import actors.ZiggoDome;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import model.messages.Reservation;
-import org.apache.commons.math3.util.MathArrays;
+import model.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.IntSupplier;
 
 /**
  * Created by jonathan on 19-1-16.
  */
 public class Test {
+
 
     public static void main(String[] args) {
 
